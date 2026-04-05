@@ -258,6 +258,7 @@ npm install --save-dev vitest @vue/test-utils jsdom @vitest/coverage-v8
 
 npm test              # run all tests
 npm run test:coverage # run with coverage report
+npx vitest --ui
 ```
 
 Expected output:

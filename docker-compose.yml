@@ -1,7 +1,8 @@
 version: "3.9"
 
 services:
-  # ── MySQL Database
+
+  # ── MySQL Database ────────────────────────────────────────────────────────
   db:
     image: mysql:8.0
     container_name: parkman_db
@@ -20,13 +21,13 @@ services:
       timeout: 5s
       retries: 10
 
-  # ── PHP Backend
+  # ── PHP Backend ───────────────────────────────────────────────────────────
   backend:
-    image: php:8.2-apache
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: parkman_backend
     restart: unless-stopped
-    volumes:
-      - ./backend:/var/www/html
     ports:
       - "8080:80"
     depends_on:
@@ -38,29 +39,37 @@ services:
       DB_NAME: parkman
       DB_USER: root
       DB_PASS: secret
-    command: >
-      bash -c "apt-get update &&
-      apt-get install -y unzip git curl &&
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
-      composer install &&
-      docker-php-ext-install pdo pdo_mysql &&
-      a2enmod rewrite &&
-      sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&
-      apache2-foreground"
+      API_BASE_URL: http://localhost:8080/api
 
-  # ── Vue 3 Frontend
+  # ── Database setup (runs once then exits) ─────────────────────────────────
+  setup:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: parkman_setup
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: parkman
+      DB_USER: root
+      DB_PASS: secret
+    command: bash -c "php migrate.php && php seed.php"
+    restart: "no"
+
+  # ── Vue 3 Frontend ────────────────────────────────────────────────────────
   frontend:
-    image: node:20-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: parkman_frontend
     restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
     ports:
       - "5173:5173"
     depends_on:
       - backend
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
 
 volumes:
   db_data:

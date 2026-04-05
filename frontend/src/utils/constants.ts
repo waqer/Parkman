@@ -11,7 +11,7 @@ import type { ZoneStatus, ZoneType } from '@/types/zone'
 export const API_BASE =
   window.location.hostname === 'http://localhost/claudePark/backend'
     ? 'http://localhost:8080'
-    : 'http://51.20.73.130:8080';
+    : 'http://51.20.137.195:8080';
 
   
 /* ──────────────────────────────────────────────────────────────

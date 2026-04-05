@@ -5,7 +5,7 @@ services:
   # ── MySQL Database ────────────────────────────────────────────────────────
   db:
     image: mysql:8.0
-    container_name: parkman_db
+    container_name: parkman
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: parkman

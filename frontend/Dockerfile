@@ -12,5 +12,8 @@ COPY . .
 # Expose Vite dev port
 EXPOSE 5173
 
+# Fix Vite permissions
+RUN chmod +x ./node_modules/.bin/vite
+
 # Run Vite on all interfaces so it's reachable outside the container
 CMD ["npx", "vite", "--host", "0.0.0.0", "--port", "5173"]

@@ -180,8 +180,7 @@ C:/xampp/htdocs/<your-folder-name>/
 Examples of valid folder names:
 ```
 C:/xampp/htdocs/parkman/
-C:/xampp/htdocs/myproject/
-C:/xampp/htdocs/claudePark/
+
 ```
 
 ### 2. Enable mod_rewrite in XAMPP
